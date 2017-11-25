@@ -1,0 +1,12 @@
+public class TestUINew{
+  
+  public static void main(String[] args)throws Exception{
+    String in = "ABCDEFG";
+    Word[] out= TestIdea.ryeBread(in);
+    for(int i=0; i<out.length; i++){
+      if(out[i].getWord()!="~"){
+        System.out.println(out[i]);
+      }
+    }
+  }
+}
