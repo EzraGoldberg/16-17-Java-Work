@@ -1,0 +1,127 @@
+//Name:    SolveJumble
+//Author:  Ezra Goldberg
+//Date started:    March 6th, 2017
+//Date last edited:    March 8th, 2017
+
+
+import java.util.*;
+import java.io.*;
+
+public class SolveJumble{
+  
+  public static Scanner scanner=new Scanner(System.in);
+  
+  public static void main(String[] args)throws Exception{
+    introduction();
+  }//end of main
+  
+  /* Pseudo code for general steps used in both methods: (method name is 'introduction')
+     Program reads the .txt file and fills an array of chars for each data entry. The array of chars is sorted and
+     then made into a String that is put into an arrayList. This process is repeated in a for loop for each data 
+     entry, then the arrayList is sorted with Collections.sort(). The arrayList is copied to an array for quicker sorting.
+     
+     Pseudo code for solution # 1: (method name is 'solve')
+     In a for loop, a string called check is defined as the current element of the array with the sorted data. Any time this string
+     is equal to another string in the array, its number of occurences increases. If the number of occurences is greater than the most
+     common string's number of occurences, this string becomes the new most common string, and its number of occurences is now the most
+     common string's number of occurences. If the number of occurences is equal to that of the most common string's, the most common
+     string is now "(the old most common string)+", "(the newer most common string), UNLESS the two stings are equal. Finally, the program
+     prints out the most common string and its number of occruences.
+     
+     Pseudo code for solution #2: (method is non-existent) 
+     A string called check is defined as the current element of the array with the sorted data. Any time this string 
+     is equal to another string in the array, its number of occurences increases. An int called elementToCheck is defined as 
+     (length of the array/2). 
+       THIS TIME, instead of checking it to element i and then i+1, and so on, we check it to element elementToCheck
+       of the array. IF the strings are not equal, compare the chars of the two until you find out whether check is alphabetically before or
+       after elementToCheck. IF check is later in the array than elementToCheck, elementToCheck is now defined as (elementToCheck + (elementToCheck/2) )
+       If not, it becomes (elementToCheck - (elementToCheck/2) ). 
+     The above steps that are indented like the line above) are repeated until check equals elementToCheck, at which point the program will 
+     compare the check with both adjacent elements of the array until finding a non-equal string, and switching the check as the next element of the array.     
+     Anytime (check.equals(elementToCheck)), the number of occurences is increased by one. If the number of occurences is greater than the most
+     common string's number of occurences, this string becomes the new most common string, and its number of occurences is now the most
+     common string's number of occurences. If the number of occurences is equal to that of the most common string's, the most common
+     string is now "(the old most common string)+", "(the newer most common string), UNLESS the two stings are equal. Finally, the program
+     prints out the most common string and its number of occruences.
+     
+     
+     Big O notation for Solution 1:
+     O(n)=n^2 
+     Where O is amount of comparisons the solving method will take and n is length of array.
+     This is because the number of comparisons is (size of the array) and occures (size of the array) amount of times, thus O(n)= n x n =n^2
+     
+     Big O notation for Solution 1:
+     O(n)=nlog(n)
+     Where O is amount of comparisons the solving method will take and n is length of array.
+     For an array of 3 elements, it will take at most 2 comparisons, 
+     for an array of 7 elements, it will take at most 3 comparisons,
+     for an array of 15 elements, it will take at most 4 comparisons. 
+     Side note: This is very efficient in terms of comparisons, but since every 
+     process and step takes time as well, it is only starts saving a notable amount 
+     of time with much larger arrays than 7 or 15. 
+     A source online which said a similar method had a Big O notation 
+     of log(n), but according to my calculations nlog(n) is much closer
+\
+     */ 
+  public static void introduction()throws Exception{
+    FileReader fr=new FileReader("wordjumble.txt");
+    BufferedReader br=new BufferedReader (fr);
+    String stringToAddToArrayList = "";
+    ArrayList<String> arrayListOfWords = new ArrayList<String>();
+    int lengthOfArrayList=0;
+    do{
+      lengthOfArrayList++;
+    }while(br.readLine()!=null);
+    br.close();
+    
+    fr=new FileReader("wordjumble.txt");
+    br=new BufferedReader (fr);
+    String sortedStringToAddToArrayList;
+    
+    for(int i=0;i<lengthOfArrayList-1;i++){
+      stringToAddToArrayList=br.readLine();
+      char[] charArray= stringToAddToArrayList.toCharArray();//makes each word a string of chars
+      Arrays.sort(charArray);                                //alphabetizes all words
+      sortedStringToAddToArrayList = new String(charArray);
+      arrayListOfWords.add(sortedStringToAddToArrayList);
+    }//end of for
+    br.close();
+    Collections.sort(arrayListOfWords);
+    //System.out.println("Sorted Contents of arrayListOfWords: " + arrayListOfWords);
+    String [] datStringArray=new String [arrayListOfWords.size()];
+    for(int counter1=0;counter1<arrayListOfWords.size();counter1++){
+      datStringArray[counter1]=arrayListOfWords.get(counter1);
+    }//end of for loop to copy the arrayList to an array for faster sorting
+    solve(datStringArray);
+  }//end of introduction
+    
+  
+  public static void solve(String [] stringArray)throws Exception{
+    String mostCommonString="";
+    String check="";
+    int mCSNOfAppearances=0;
+    int currentStringsNumberOfAppearances=0;
+    
+    for(int counter2=0 ; counter2<stringArray.length ; counter2++){
+      check=stringArray[counter2];
+      for(int counter3=0 ; counter3<stringArray.length ; counter3++){
+        if(check.equalsIgnoreCase(stringArray[counter3])){
+          currentStringsNumberOfAppearances++;
+        }//end of if
+      }//end of for
+      if(currentStringsNumberOfAppearances>mCSNOfAppearances){
+        mostCommonString=check;
+        mCSNOfAppearances=currentStringsNumberOfAppearances;
+      }//end of if
+      else if(currentStringsNumberOfAppearances==mCSNOfAppearances){
+        if(mostCommonString.contains(check)){}//end of if
+        else{mostCommonString=mostCommonString+", "+check;}
+      }//end of else if
+      currentStringsNumberOfAppearances=0;
+      //mostCommonString
+    }//end of for loop to find most common string and its number of occurences
+    System.out.println("mostCommonString is : " + mostCommonString + " and it appears: " + mCSNOfAppearances + " times in the file.");
+    
+  }//end of solve
+  
+}//end of WordJumble
